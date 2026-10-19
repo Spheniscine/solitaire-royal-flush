@@ -4,6 +4,9 @@ pub use card::*;
 mod skin;
 pub use skin::*;
 
+mod poker;
+pub use poker::*;
+
 // mod board;
 // pub use board::*;
 
