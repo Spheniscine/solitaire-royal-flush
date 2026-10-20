@@ -4,6 +4,9 @@ use arrayvec::ArrayVec;
 
 use crate::game::Card;
 
+pub const POKER_HAND_SIZE: usize = 5;
+pub type PokerHand = [Card; 5];
+
 /// Represents the category of a 5-card poker hand.
 /// Ordered from weakest to strongest so PartialOrd/Ord work correctly.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -74,7 +77,7 @@ pub struct PokerHandScore {
     pub ranks: [u8; 5], 
 }
 
-pub fn score_hand(cards: [Card; 5]) -> PokerHandScore {
+pub fn score_hand(cards: PokerHand) -> PokerHandScore {
     // Convert internal rank (1-13) to output rank (2-14, Ace=14)
     let out_rank = |r: u8| if r == 1 { 14 } else { r };
 
@@ -187,5 +190,81 @@ pub fn score_hand(cards: [Card; 5]) -> PokerHandScore {
     PokerHandScore {
         category: PokerHandCategory::HighCard,
         ranks,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::game::{Card, POKER_HAND_SIZE, PokerHand, PokerHandCategory, PokerHandScore, score_hand};
+    use PokerHandCategory::*;
+
+    fn hand(code0: &str, code1: &str, code2: &str, code3: &str, code4: &str) -> PokerHand {
+        [code0, code1, code2, code3, code4].map(|code| {
+            Card::from_code(code).unwrap()
+        })
+    }
+
+    fn score_test(hand: PokerHand, category: PokerHandCategory, ranks: [u8; POKER_HAND_SIZE]) {
+        assert_eq!(score_hand(hand), PokerHandScore { category, ranks })
+    }
+
+    #[test]
+    fn test_score_royal_flush() {
+        score_test(hand("10D","11D","1D","13D","12D"),
+            RoyalFlush, [14, 13, 12, 11, 10]);
+    }
+
+    #[test]
+    fn test_score_straight_flush() {
+        score_test(hand("4D","2D","1D","3D","5D"),
+            StraightFlush, [5, 4, 3, 2, 1]);
+    }
+
+    #[test]
+    fn test_score_four_of_a_kind() {
+        score_test(hand("5D","5S","6D","5C","5H"),
+            FourOfAKind, [5, 5, 5, 5, 6]);
+    }
+
+    #[test]
+    fn test_score_full_house() {
+        score_test(hand("13H","6S","6D","6H","13S"),
+            FullHouse, [6, 6, 6, 13, 13]);
+    }
+
+    #[test]
+    fn test_score_flush() {
+        score_test(hand("3D","8D","4D","9D","11D"),
+            Flush, [11, 9, 8, 4, 3]);
+    }
+
+    #[test]
+    fn test_score_straight() {
+        score_test(hand("10D","8H","9S","7D","6C"),
+            Straight, [10, 9, 8, 7, 6]);
+    }
+
+    #[test]
+    fn test_score_three_of_a_kind() {
+        score_test(hand("9D","9H","9S","2D","12C"),
+            ThreeOfAKind, [9, 9, 9, 12, 2]);
+    }
+
+    #[test]
+    fn test_score_two_pair() {
+        score_test(hand("11D","11H","2S","2D","3C"),
+            TwoPair, [11, 11, 2, 2, 3]);
+    }
+
+    #[test]
+    fn test_score_pair() {
+        score_test(hand("11D","11H","12S","7D","4C"),
+            OnePair, [11, 11, 12, 7, 4]);
+    }
+
+    #[test]
+    fn test_score_high_card() {
+        score_test(hand("13D","12D","4S","3H","7S"),
+            HighCard, [13, 12, 7, 4, 3]);
     }
 }
