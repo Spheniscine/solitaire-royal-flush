@@ -1,6 +1,7 @@
 use std::cmp::Reverse;
 
 use arrayvec::ArrayVec;
+use enum_map::Enum;
 
 use crate::game::Card;
 
@@ -9,7 +10,7 @@ pub type PokerHand = [Card; 5];
 
 /// Represents the category of a 5-card poker hand.
 /// Ordered from weakest to strongest so PartialOrd/Ord work correctly.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Enum)]
 pub enum PokerHandCategory {
     /// No other hand category applies.
     HighCard,

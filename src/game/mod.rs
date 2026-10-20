@@ -7,8 +7,8 @@ pub use skin::*;
 mod poker;
 pub use poker::*;
 
-// mod board;
-// pub use board::*;
+mod board;
+pub use board::*;
 
 // mod game;
 // pub use game::*;
