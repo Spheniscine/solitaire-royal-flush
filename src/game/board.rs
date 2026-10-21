@@ -96,14 +96,14 @@ serde_with::serde_conv!(
 #[derive(Copy, Clone, Serialize, Deserialize, Debug, PartialEq, Eq, Default)]
 pub struct ScoreBoard {
     #[serde_as(as = EnumMapAsArray)]
-    pub hand_scores: EnumMap<PokerHandCategory, u8>,
+    pub category_scores: EnumMap<PokerHandCategory, u8>,
 }
 
 pub type Score = u16;
 
 impl ScoreBoard {
     pub fn score(self) -> Score {
-        self.hand_scores.values().map(|x| *x as Score).sum()
+        self.category_scores.values().map(|x| *x as Score).sum()
     }
 }
 
