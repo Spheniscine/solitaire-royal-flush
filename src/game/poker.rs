@@ -17,7 +17,7 @@ pub enum PokerHandCategory {
     HighCard,
 
     /// One pair of cards.
-    OnePair,
+    Pair,
 
     /// Two different pairs.
     TwoPair,
@@ -49,7 +49,7 @@ impl PokerHandCategory {
         use PokerHandCategory::*;
         match self {
             HighCard => 1,
-            OnePair => 2,
+            Pair => 2,
             ThreeOfAKind => 3,
             TwoPair | FourOfAKind => 4,
             _ => 5,
@@ -60,13 +60,13 @@ impl PokerHandCategory {
         use PokerHandCategory::*;
         match self {
             HighCard => "High card",
-            OnePair => "Pair",
+            Pair => "Pair",
             TwoPair => "Two pairs",
-            ThreeOfAKind => "3 of a kind",
+            ThreeOfAKind => "Three of a kind",
             Straight => "Straight",
             Flush => "Flush",
             FullHouse => "Full house",
-            FourOfAKind => "4 of a kind",
+            FourOfAKind => "Four of a kind",
             StraightFlush => "Straight flush",
             RoyalFlush => "Royal flush",
         }
@@ -183,7 +183,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
     // One Pair
     if pairs.len() == 1 {
         return PokerHandScore {
-            category: PokerHandCategory::OnePair,
+            category: PokerHandCategory::Pair,
             ranks: [pairs[0], pairs[0], kickers[0], kickers[1], kickers[2]],
         };
     }
@@ -261,7 +261,7 @@ mod tests {
     #[test]
     fn test_score_pair() {
         score_test(hand("11D","11H","12S","7D","4C"),
-            OnePair, [11, 11, 12, 7, 4]);
+            Pair, [11, 11, 12, 7, 4]);
     }
 
     #[test]

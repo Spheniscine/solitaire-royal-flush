@@ -181,7 +181,7 @@ table.scoreboard {
 
 .scoreboard tr.muted td {
     /* padding-top: 1rem; */
-    color: #666;
+    color: #777;
 }
 .scoreboard tr.highlight td {
     /* padding-top: 1rem; */
