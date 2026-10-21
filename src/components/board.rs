@@ -226,7 +226,8 @@ pub fn BoardComponent(
     };
 
     let hand_frames = rsx! {
-        for i in 0..POKER_HAND_SIZE {
+        // reverse overlap as I think it looks better that way
+        for i in (0..POKER_HAND_SIZE).rev() {
             CardFrame { 
                 position: get_pos(DepotRole::Hand.id(0), i),
                 width: card_width,
