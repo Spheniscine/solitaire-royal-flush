@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use glam::Vec2;
 
-use crate::{components::{CARD_HEIGHT_RATIO, CardComponent, CardFrame, Movement, rem}, game::{AnimationAct, AnimationKey, Board, BoardPos, Card, DepotRole, NUM_DEPOTS, POKER_HAND_SIZE, PokerHandCategory, SCORE_GOAL, Score, ScoreBoard, Skin}};
+use crate::{components::{CARD_BORDER_RADIUS_RATIO, CARD_HEIGHT_RATIO, CardComponent, CardFrame, Movement, rem}, game::{AnimationAct, AnimationKey, Board, BoardPos, Card, DepotRole, NUM_DEPOTS, POKER_HAND_SIZE, PokerHandCategory, SCORE_GOAL, Score, ScoreBoard, Skin}};
 
 #[component]
 pub fn ScoreBoardComponent(
@@ -166,6 +166,16 @@ pub fn BoardComponent(
         DepotRole::role(depot).unwrap().is_face_up()
     };
 
+    let selected_height = if let Some(BoardPos { depot_index, card_index }) = board.selected {
+        let d = if DepotRole::role(depot_index).unwrap() == DepotRole::Tableau {
+            board.depots[depot_index].len() - card_index - 1
+        } else {
+            0
+        };
+
+        card_height + y_card_offset.y * d as f32
+    } else {0.};
+
     let moving_card = |p1: Vec2, p2: Vec2, card: Card| rsx! {
         Movement {
             src_translate_vec: p1 - p2,
@@ -248,6 +258,19 @@ pub fn BoardComponent(
                 }
 
                 for i in 0..board.depots[depot].len() {
+                    if board.selected == Some(BoardPos::new(depot, i)) {
+                        div {
+                            position: "absolute",
+                            top: rem(get_pos(depot, i).y),
+                            left: rem(get_pos(depot, i).x),
+                            width: rem(card_width),
+                            height: rem(selected_height),
+                            background_color: "#ff0",
+                            border_radius: rem(card_width * CARD_BORDER_RADIUS_RATIO),
+                            class: "selected-halo",
+                        }
+                    }
+
                     CardComponent { 
                         position: get_pos(depot, i),
                         width: card_width,
