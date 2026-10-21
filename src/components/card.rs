@@ -20,7 +20,7 @@ pub const CARD_FONT_RATIO: f32 = 5. / 12.;
 pub fn CardComponent<C: PartialEq + Clone + 'static, S: SkinTrait<C> + 'static>(
     position: Vec2,
     width: f32,
-    card: C,
+    card: Option<C>,
     skin: S,
 
     // number_hint: Option<usize>,
@@ -37,32 +37,82 @@ pub fn CardComponent<C: PartialEq + Clone + 'static, S: SkinTrait<C> + 'static>(
         rem(x * pt)
     };
 
-    rsx! {
-        div {
-            style: "place-items: center;",
-            position: "absolute",
-            top: rem(position.y),
-            left: rem(position.x),
-            background_color: color_mode.choose("#fff", "#101"),
-            width: pt(BASE_CARD_WIDTH - 1.),
-            height: pt(BASE_CARD_HEIGHT - 1.),
-            border: "{pt(0.25)} solid",
-            border_color: color_mode.choose("#000", "#868"),
-            border_radius: rem(width * CARD_BORDER_RADIUS_RATIO),
-            display: "grid",
-            grid_template_columns: "50% 50%",
-            grid_template_rows: "50% 50%",
-            font_size: rem(width * CARD_FONT_RATIO),
-            text_align: "center",
-            padding: pt(0.25),
-            color: skin.get_color(&card, !color_mode),
+    if let Some(card) = &card {
+        rsx! {
+            div {
+                style: "place-items: center;",
+                position: "absolute",
+                top: rem(position.y),
+                left: rem(position.x),
+                background_color: color_mode.choose("#fff", "#101"),
+                width: pt(BASE_CARD_WIDTH - 1.),
+                height: pt(BASE_CARD_HEIGHT - 1.),
+                border: "{pt(0.25)} solid",
+                border_color: color_mode.choose("#000", "#868"),
+                border_radius: rem(width * CARD_BORDER_RADIUS_RATIO),
+                display: "grid",
+                grid_template_columns: "50% 50%",
+                grid_template_rows: "50% 50%",
+                font_size: rem(width * CARD_FONT_RATIO),
+                text_align: "center",
+                padding: pt(0.25),
+                color: skin.get_color(&card, !color_mode),
 
-            onclick, ondoubleclick,
+                onclick, ondoubleclick,
 
-            div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_rank(&card)}},
-            div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_suit(&card)}},
-            div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_suit(&card)}},
-            div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_rank(&card)}},
+                div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_rank(&card)}},
+                div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_suit(&card)}},
+                div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_suit(&card)}},
+                div { display: "flex", align_items: "center", pointer_events: "none", {skin.render_rank(&card)}},
+            }
+        }
+    } else {
+        rsx! {
+            div {
+                style: "--card-width: {pt(BASE_CARD_WIDTH - 1.)}",
+                div {
+                    style: "place-items: center;",
+                    position: "absolute",
+                    top: rem(position.y),
+                    left: rem(position.x),
+                    background_color: "#fff",
+                    width: pt(BASE_CARD_WIDTH - 1.),
+                    height: pt(BASE_CARD_HEIGHT - 1.),
+                    border: "{pt(0.25)} solid #000",
+                    border_radius: rem(width * CARD_BORDER_RADIUS_RATIO),
+                    padding: pt(0.25),
+                    display: "grid",
+                    onclick, ondoubleclick,
+
+                    div {
+                        class: "card-pattern-1",
+                        position: "relative",
+                        width: pt(BASE_CARD_WIDTH - 1.25),
+                        height: pt(BASE_CARD_HEIGHT - 1.25),
+                        border_radius: pt(1.),
+                        display: "flex",
+                        justify_content: "center",
+                        align_items: "center",
+
+                        // if let Some(number_hint) = number_hint {
+                        //     div {
+                        //         background: "rgba(192, 192, 192, 0.75)",
+                        //         // position: "absolute",
+                        //         // bottom: pt(0.5),
+                        //         border_radius: pt(1.),
+                        //         color: "#000",
+                        //         font_family: KATEX_SUITS_FONT_STR,
+                        //         font_size: pt(4.),
+                        //         height: pt(4.5),
+                        //         display: "flex",
+                        //         align_items: "center",
+                        //         padding: "{pt(0.25)} {pt(0.75)}",
+                        //         "{number_hint}",
+                        //     }
+                        // }
+                    }
+                }
+            }
         }
     }
 }
@@ -105,6 +155,8 @@ pub fn CardFrame(
             padding: pt(0.25),
             onclick, 
             //oncontextmenu,
+
+            background_color: "#031",
 
             if let Some(hint) = hint {
                 div {

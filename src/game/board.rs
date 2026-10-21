@@ -7,7 +7,7 @@ use serde_with::serde_as;
 use strum::{IntoEnumIterator, VariantArray};
 use strum_macros::{EnumIter, VariantArray};
 
-use crate::game::{Card, DECK_SIZE, PokerHandCategory};
+use crate::game::{Card, DECK_SIZE, PokerHandCategory, score_hand};
 
 #[derive(Copy, Clone, Serialize, Deserialize, Debug, PartialEq, Eq, EnumIter, VariantArray)]
 #[repr(u8)]
@@ -65,6 +65,10 @@ impl DepotRole {
 
     pub fn id(self, i: usize) -> usize {
         self.offset() + i
+    }
+
+    pub fn is_face_up(self) -> bool {
+        self != DepotRole::Discard
     }
 }
 
@@ -162,5 +166,12 @@ impl Board {
 
     pub fn last_pos(&self, depot: usize) -> BoardPos {
         BoardPos::new(depot, self.depots[depot].len().wrapping_sub(1))
+    }
+
+    pub fn hand_score(&self) -> Option<(PokerHandCategory, u8)> {
+        let eval = score_hand(self.depots[DepotRole::Hand.id(0)].clone().try_into().ok()?);
+        let category = eval.category;
+        let score = eval.ranks.iter().take(category.num_scoring_cards()).sum();
+        Some((category, score))
     }
 }
