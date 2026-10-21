@@ -7,7 +7,7 @@ use serde_with::serde_as;
 use strum::{IntoEnumIterator, VariantArray};
 use strum_macros::{EnumIter, VariantArray};
 
-use crate::game::{Card, PokerHandCategory};
+use crate::game::{Card, DECK_SIZE, PokerHandCategory};
 
 #[derive(Copy, Clone, Serialize, Deserialize, Debug, PartialEq, Eq, EnumIter, VariantArray)]
 #[repr(u8)]
@@ -97,5 +97,70 @@ serde_with::serde_conv!(
 pub struct ScoreBoard {
     #[serde_as(as = EnumMapAsArray)]
     pub hand_scores: EnumMap<PokerHandCategory, u8>,
-    pub score: i32,
+}
+
+pub type Score = u16;
+
+impl ScoreBoard {
+    pub fn score(self) -> Score {
+        self.hand_scores.values().map(|x| *x as Score).sum()
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
+pub struct Board {
+    pub depots: Vec<Vec<Card>>,
+    pub selected: Option<BoardPos>,
+    pub score_board: ScoreBoard,
+    pub animation_acts: Vec<AnimationAct>,
+}
+
+impl Board {
+    pub fn empty() -> Self {
+        Self {
+            depots: vec![vec![]; NUM_DEPOTS],
+            selected: None,
+            score_board: ScoreBoard::default(),
+            animation_acts: vec![],
+        }
+    }
+
+    pub fn from_deal(deal: &[Card]) -> Self {
+        use DepotRole::*;
+        assert_eq!(deal.len(), DECK_SIZE);
+
+        let mut res = Self::empty();
+        let range = Tableau.id(0) .. Tableau.id(4);
+        for (&card, depot) in deal.iter().zip(std::iter::repeat(range).flatten()) {
+            res.depots[depot].push(card);
+        }
+
+        res
+    }
+
+    pub fn do_move(&mut self, pos1: BoardPos, pos2: BoardPos) {
+        self.selected = None;
+        let cards = self.depots[pos1.depot_index].drain(pos1.card_index ..).collect();
+        self.animation_acts.push(
+            AnimationAct::Move(cards, pos1, pos2)
+        );
+    }
+
+    pub fn advance_actions(&mut self) {
+        for act in self.animation_acts.drain(..) {
+            match act {
+                AnimationAct::Move(cards, _pos1, pos2) => {
+                    self.depots[pos2.depot_index].extend(cards);
+                },
+            }
+        }
+    }
+
+    pub fn top_pos(&self, depot: usize) -> BoardPos {
+        BoardPos::new(depot, self.depots[depot].len())
+    }
+
+    pub fn last_pos(&self, depot: usize) -> BoardPos {
+        BoardPos::new(depot, self.depots[depot].len().wrapping_sub(1))
+    }
 }
