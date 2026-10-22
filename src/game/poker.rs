@@ -74,12 +74,12 @@ impl PokerHandCategory {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
-pub struct PokerHandScore {
+pub struct PokerHandEval {
     pub category: PokerHandCategory,
     pub ranks: [u8; 5], 
 }
 
-pub fn score_hand(cards: PokerHand) -> PokerHandScore {
+pub fn eval_hand(cards: PokerHand) -> PokerHandEval {
     // Convert internal rank (1-13) to output rank (2-14, Ace=14)
     let out_rank = |r: u8| if r == 1 { 14 } else { r };
 
@@ -101,7 +101,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Straight Flush / Royal Flush
     if is_flush && is_straight {
-        return PokerHandScore {
+        return PokerHandEval {
             category: if is_broadway { 
                 PokerHandCategory::RoyalFlush 
             } else { 
@@ -134,7 +134,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Four of a Kind
     if quads != 0 {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::FourOfAKind,
             ranks: [quads, quads, quads, quads, kickers[0]],
         };
@@ -142,7 +142,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Full House
     if trips != 0 && !pairs.is_empty() {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::FullHouse,
             ranks: [trips, trips, trips, pairs[0], pairs[0]],
         };
@@ -150,7 +150,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Flush
     if is_flush {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::Flush,
             ranks,
         };
@@ -158,7 +158,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Straight
     if is_straight {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::Straight,
             ranks: straight_ranks,
         };
@@ -166,7 +166,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Three of a Kind
     if trips != 0 {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::ThreeOfAKind,
             ranks: [trips, trips, trips, kickers[0], kickers[1]],
         };
@@ -174,7 +174,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // Two Pair
     if pairs.len() == 2 {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::TwoPair,
             ranks: [pairs[0], pairs[0], pairs[1], pairs[1], kickers[0]],
         };
@@ -182,14 +182,14 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
     // One Pair
     if pairs.len() == 1 {
-        return PokerHandScore {
+        return PokerHandEval {
             category: PokerHandCategory::Pair,
             ranks: [pairs[0], pairs[0], kickers[0], kickers[1], kickers[2]],
         };
     }
 
     // High Card
-    PokerHandScore {
+    PokerHandEval {
         category: PokerHandCategory::HighCard,
         ranks,
     }
@@ -197,7 +197,7 @@ pub fn score_hand(cards: PokerHand) -> PokerHandScore {
 
 #[cfg(test)]
 mod tests {
-    use crate::game::{Card, POKER_HAND_SIZE, PokerHand, PokerHandCategory, PokerHandScore, score_hand};
+    use crate::game::{Card, POKER_HAND_SIZE, PokerHand, PokerHandCategory, PokerHandEval, eval_hand};
     use PokerHandCategory::*;
 
     fn hand(code0: &str, code1: &str, code2: &str, code3: &str, code4: &str) -> PokerHand {
@@ -206,67 +206,67 @@ mod tests {
         })
     }
 
-    fn score_test(hand: PokerHand, category: PokerHandCategory, ranks: [u8; POKER_HAND_SIZE]) {
-        assert_eq!(score_hand(hand), PokerHandScore { category, ranks })
+    fn eval_test(hand: PokerHand, category: PokerHandCategory, ranks: [u8; POKER_HAND_SIZE]) {
+        assert_eq!(eval_hand(hand), PokerHandEval { category, ranks })
     }
 
     #[test]
-    fn test_score_royal_flush() {
-        score_test(hand("10D","11D","1D","13D","12D"),
+    fn test_eval_royal_flush() {
+        eval_test(hand("10D","11D","1D","13D","12D"),
             RoyalFlush, [14, 13, 12, 11, 10]);
     }
 
     #[test]
-    fn test_score_straight_flush() {
-        score_test(hand("4D","2D","1D","3D","5D"),
+    fn test_eval_straight_flush() {
+        eval_test(hand("4D","2D","1D","3D","5D"),
             StraightFlush, [5, 4, 3, 2, 1]);
     }
 
     #[test]
-    fn test_score_four_of_a_kind() {
-        score_test(hand("5D","5S","6D","5C","5H"),
+    fn test_eval_four_of_a_kind() {
+        eval_test(hand("5D","5S","6D","5C","5H"),
             FourOfAKind, [5, 5, 5, 5, 6]);
     }
 
     #[test]
-    fn test_score_full_house() {
-        score_test(hand("13H","6S","6D","6H","13S"),
+    fn test_eval_full_house() {
+        eval_test(hand("13H","6S","6D","6H","13S"),
             FullHouse, [6, 6, 6, 13, 13]);
     }
 
     #[test]
-    fn test_score_flush() {
-        score_test(hand("3D","8D","4D","9D","11D"),
+    fn test_eval_flush() {
+        eval_test(hand("3D","8D","4D","9D","11D"),
             Flush, [11, 9, 8, 4, 3]);
     }
 
     #[test]
-    fn test_score_straight() {
-        score_test(hand("10D","8H","9S","7D","6C"),
+    fn test_eval_straight() {
+        eval_test(hand("10D","8H","9S","7D","6C"),
             Straight, [10, 9, 8, 7, 6]);
     }
 
     #[test]
-    fn test_score_three_of_a_kind() {
-        score_test(hand("9D","9H","9S","2D","12C"),
+    fn test_eval_three_of_a_kind() {
+        eval_test(hand("9D","9H","9S","2D","12C"),
             ThreeOfAKind, [9, 9, 9, 12, 2]);
     }
 
     #[test]
-    fn test_score_two_pair() {
-        score_test(hand("11D","11H","2S","2D","3C"),
+    fn test_eval_two_pair() {
+        eval_test(hand("11D","11H","2S","2D","3C"),
             TwoPair, [11, 11, 2, 2, 3]);
     }
 
     #[test]
-    fn test_score_pair() {
-        score_test(hand("11D","11H","12S","7D","4C"),
+    fn test_eval_pair() {
+        eval_test(hand("11D","11H","12S","7D","4C"),
             Pair, [11, 11, 12, 7, 4]);
     }
 
     #[test]
-    fn test_score_high_card() {
-        score_test(hand("13D","12D","4S","3H","7S"),
+    fn test_eval_high_card() {
+        eval_test(hand("13D","12D","4S","3H","7S"),
             HighCard, [13, 12, 7, 4, 3]);
     }
 }
