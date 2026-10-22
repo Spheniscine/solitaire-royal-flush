@@ -72,13 +72,13 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
                     {rank_text(RANK_QUEEN)} "=12, "
                     {rank_text(RANK_KING)} "=13, "
                     {rank_text(RANK_ACE)} "=14 if high and 1 if low"
-                    "). Only one hand in each category will contribute to the final score; if you 
+                    "). Only one hand in each category will contribute to the total score; if you 
                     score several hands of the same category, only the highest-scoring hand will contribute."
                 }
 
                 p {
                     "To " Emph{"win the game"} ", score " Emph{"240 points"} " or more before the end of the game. 
-                    The game ends after 10 hands have been evaluated (as the 2 remaining cards can’t be used)."
+                    The game ends after 10 hands have been filled (as the 2 remaining cards can’t be used)."
                 }
 
                 p {
