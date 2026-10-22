@@ -38,9 +38,8 @@ body {
     flex-direction: column;
     align-items: center;
 
-    overflow: hidden;
     /* enables scrolling if there are long depots */
-    /* overflow: hidden auto; */
+    overflow: hidden auto;
 }
 
 /* boilerplate for testing on Dioxus default page */
