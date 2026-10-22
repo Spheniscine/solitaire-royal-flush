@@ -113,8 +113,8 @@ pub fn eval_hand(cards: PokerHand) -> PokerHandEval {
 
     // Count frequencies
     let mut freq = [0u8; 15]; // index 0-1 unused, 2-14 for ranks
-    for card in &cards {
-        freq[card.rank as usize] += 1;
+    for rank in ranks {
+        freq[rank as usize] += 1;
     }
 
     let mut quads = 0u8;
@@ -226,6 +226,12 @@ mod tests {
     fn test_eval_four_of_a_kind() {
         eval_test(hand("5D","5S","6D","5C","5H"),
             FourOfAKind, [5, 5, 5, 5, 6]);
+    }
+
+    #[test]
+    fn test_eval_four_of_a_kind_2() {
+        eval_test(hand("2S","2D","2H","1D","2C"),
+            FourOfAKind, [2, 2, 2, 2, 14]);
     }
 
     #[test]

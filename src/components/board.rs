@@ -238,6 +238,53 @@ pub fn BoardComponent(
         }
     };
 
+    let game_status_y = 131f32;
+    let game_status_node = {
+        //let is_won = true; // test
+        
+        rsx! {
+            if is_won {
+                div {
+                    position: "absolute",
+                    top: rem(game_status_y),
+                    left: rem(17.5),
+                    width: rem(59.),
+                    background_color: "#505",
+                    padding: rem(3.),
+                    color: "#fff",
+                    font_size: rem(7.),
+                    border_radius: rem(2.),
+                    text_align: "center",
+                    "YOU WIN!",
+                    if !is_over {
+                        p {
+                            font_size: rem(3.),
+                            "You may keep playing for a high score."
+                        }
+                    }
+                }
+            } else if is_over {
+                div {
+                    position: "absolute",
+                    top: rem(game_status_y),
+                    left: rem(17.5),
+                    width: rem(59.),
+                    background_color: "#000",
+                    padding: rem(3.),
+                    color: "#fff",
+                    font_size: rem(7.),
+                    border_radius: rem(2.),
+                    text_align: "center",
+                    "GAME OVER",
+                    p {
+                        font_size: rem(3.),
+                        "You didn’t score enough points."
+                    }
+                }
+            }
+        }
+    };
+
     rsx! {
         div {
             position: "absolute",
@@ -245,6 +292,7 @@ pub fn BoardComponent(
             left: rem(position.x),
 
             {hand_frames},
+            {game_status_node},
 
             for depot in 0..NUM_DEPOTS {
                 if let Some(hint) = get_hint(depot) {
@@ -280,6 +328,9 @@ pub fn BoardComponent(
                         skin,
                         onclick: move |_| {
                             onclick.call(BoardPos::new(depot, i))
+                        },
+                        ondoubleclick: move |_| {
+                            ondoubleclick.call(BoardPos::new(depot, i))
                         },
                     }
                 }

@@ -204,6 +204,7 @@ impl GameState {
 
     pub fn ondoubleclick(&mut self, pos: BoardPos) {
         if self.is_busy() { return; }
+        if self.is_over() { return; }
         if !self.can_select(pos) { return; } // needed, or illegal stacks can still be moved this way!
 
         // double click moves cards to the hand if possible
@@ -216,15 +217,6 @@ impl GameState {
         
         self.board.advance_actions();
 
-        if self.is_won() {
-            if !self.already_won {
-                self.num_wins += 1;
-                self.already_won = true;
-            }
-        } else {
-            // self.check_auto_moves();
-        }
-
         if let Some((category, score)) = self.board.hand_score() {
             let entry = &mut self.board.score_board.category_scores[category];
             let old_score = *entry;
@@ -233,6 +225,15 @@ impl GameState {
                 *entry = score;
                 self.high_score = self.high_score.max(self.board.score_board.score());
             }
+        }
+
+        if self.is_won() {
+            if !self.already_won {
+                self.num_wins += 1;
+                self.already_won = true;
+            }
+        } else {
+            // self.check_auto_moves();
         }
 
         if !self.is_busy() { LocalStorage.save_game_state(&self); }
