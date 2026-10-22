@@ -1,9 +1,16 @@
 [application]
 
+# `build` & `serve` dist path
+platform = "web"
+
+[web]
+pre_compress = false
+
 [web.app]
+base_path = "solitaire-royal-flush"
 
 # HTML title tag content
-title = "solitaire-royal-flush"
+title = "Royal Flush Solitaire"
 
 # include `assets` in web platform
 [web.resource]
