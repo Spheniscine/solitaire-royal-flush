@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use strum::IntoEnumIterator;
 
-use crate::{components::rem, game::{ColorSkin, GameState, RankSkin, ScreenState, SuitSkin}};
+use crate::game::{ColorSkin, GameState, ScreenState, SuitSkin};
 
 #[component]
 pub fn Settings(game_state: Signal<GameState>) -> Element {

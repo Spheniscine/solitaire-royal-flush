@@ -1,11 +1,10 @@
 use std::time::Duration;
 
-use enum_map::EnumMap;
 use rand::{Rng, seq::SliceRandom};
 use serde::{Deserialize, Serialize};
-use strum::{EnumCount, IntoEnumIterator};
+use strum::IntoEnumIterator;
 
-use crate::{components::LocalStorage, game::{Board, BoardPos, Card, DECK_SIZE, DepotRole, NUM_RANKS, POKER_HAND_SIZE, PokerHandCategory, RANKS, Score, SettingsState, Skin, Suit}};
+use crate::{components::LocalStorage, game::{Board, BoardPos, Card, DECK_SIZE, DepotRole, POKER_HAND_SIZE, PokerHandCategory, RANKS, Score, SettingsState, Skin, Suit}};
 
 pub const ANIMATION_DURATION: Duration = Duration::from_millis(200);
 pub type AnimationKey = u16;
