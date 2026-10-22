@@ -64,7 +64,7 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
                 }
 
                 p {
-                    "Single cards may be moved to the " Emph {"hand"} ". Cards can’t be removed from the hand until evaluated. 
+                    "Single cards may be moved to the " Emph {"hand"} ". (Cards can’t be removed from the hand.)
                     Once all 5 slots of the hand are filled, the cards are evaluated as a " Emph {"poker hand"} ". 
                     It is assigned a poker hand " Emph {"category"} ", and points are awarded by the sum of the values of the cards 
                     that contributed to that category ("
