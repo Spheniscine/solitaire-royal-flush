@@ -138,6 +138,10 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
 
                     p {
                         margin_top: "0",
+
+                        Emph {
+                            "Rules of poker hands:"
+                        }
                         
                         ul {
                             li {
