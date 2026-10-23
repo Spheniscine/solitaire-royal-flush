@@ -46,10 +46,11 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
 
     rsx! {
         div {
-            style: "display: flex; flex-direction: column; align-items: center; font-size: 3.9rem; color: #fff; padding: 4rem;",
+            style: "display: flex; flex-direction: column; align-items: center; color: #fff; padding: 4rem;",
             class: "help",
 
             div {
+                font_size: "3.75rem",
                 text_align: "left",
 
                 p {
@@ -95,28 +96,61 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
                 bottom: rem(2.),
                 width: "92rem",
                 display: "flex",
+                flex_direction: "column",
                 justify_content: "center",
 
-                a {
-                    // href: VIDEO_GAMEPLAY,
-                    // target: "_blank",
-                    text_decoration: "none",
-                    margin_right: rem(4.),
-                    div {
-                        width: rem(30.),
-                        position: "relative",
-                        // class: "game-button",
-                        class: "game-button-disabled",
-                        "Example video"
+                div {
+                    display: "flex",
+                    flex_direction: "row",
+                    justify_content: "center",
+                    font_size: "4rem",
+                    margin_bottom: "1rem",
+
+                    span {
+                        font_family: "Noto Sans Symbols 2",
+                        font_size: "4.5rem",
+                        "◀"
+                    }
+
+                    span {
+                        width: "30rem",
+                        text_align: "center",
+                        "Page 1 of 2"
+                    }
+                    
+
+                    span {
+                        font_family: "Noto Sans Symbols 2",
+                        font_size: "4.5rem",
+                        "▶"
                     }
                 }
 
                 div {
-                    width: rem(30.),
-                    position: "relative",
-                    class: "game-button",
-                    onclick: move |_| game_state.write().screen_state = ScreenState::Game,
-                    "Back to game"
+                    display: "flex",
+                    flex_direction: "row",
+                    justify_content: "center",
+                    a {
+                        // href: VIDEO_GAMEPLAY,
+                        // target: "_blank",
+                        text_decoration: "none",
+                        margin_right: rem(4.),
+                        div {
+                            width: rem(30.),
+                            position: "relative",
+                            // class: "game-button",
+                            class: "game-button-disabled",
+                            "Example video"
+                        }
+                    }
+
+                    div {
+                        width: rem(30.),
+                        position: "relative",
+                        class: "game-button",
+                        onclick: move |_| game_state.write().screen_state = ScreenState::Game,
+                        "Back to game"
+                    }
                 }
             }
         }
