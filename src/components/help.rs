@@ -46,7 +46,7 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
 
     rsx! {
         div {
-            style: "display: flex; flex-direction: column; align-items: center; font-size: 4rem; color: #fff; padding: 4rem;",
+            style: "display: flex; flex-direction: column; align-items: center; font-size: 3.9rem; color: #fff; padding: 4rem;",
             class: "help",
 
             div {
@@ -72,13 +72,17 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
                     {rank_text(RANK_QUEEN)} "=12, "
                     {rank_text(RANK_KING)} "=13, "
                     {rank_text(RANK_ACE)} "=14 if high and 1 if low"
-                    "). Only one hand in each category will contribute to the total score; if you 
-                    score several hands of the same category, only the highest-scoring hand will contribute."
+                    "). Only the highest-scoring hand in each category will contribute to the total score."
+                }
+
+                p {
+                    "After a hand is filled, click the hand or the " Emph {"discard"} " pile to discard it. You may also move another
+                    card to the hand; the old hand will be discarded automatically."
                 }
 
                 p {
                     "To " Emph{"win the game"} ", score " Emph{"240 points"} " or more before the end of the game. 
-                    The game ends after 10 hands have been filled (as the 2 remaining cards can’t be used)."
+                    The game ends after 10 hands are filled (as the 2 remaining cards can’t be used)."
                 }
 
                 p {
