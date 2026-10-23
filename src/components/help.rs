@@ -52,7 +52,7 @@ fn Paginator(mut page_num: Signal<usize>, num_pages: usize) -> Element {
             align_items: "center",
 
             span {
-                font_family: "Noto Sans Symbols 2",
+                font_family: "'Noto Sans Symbols 2'",
                 font_size: "6rem",
                 visibility: if curr_page_num == 0 {"hidden"},
                 onclick: move |_| { *page_num.write() -= 1; },
@@ -67,7 +67,7 @@ fn Paginator(mut page_num: Signal<usize>, num_pages: usize) -> Element {
             
 
             span {
-                font_family: "Noto Sans Symbols 2",
+                font_family: "'Noto Sans Symbols 2'",
                 font_size: "6rem",
                 visibility: if curr_page_num + 1 == num_pages {"hidden"},
                 onclick: move |_| { *page_num.write() += 1; },
