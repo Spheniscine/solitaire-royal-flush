@@ -150,10 +150,11 @@ pub fn Help(mut game_state: Signal<GameState>) -> Element {
                         
                         ul {
                             li {
-                                "Order of cards within a hand do not matter."
+                                "Order of cards within a hand doesn’t matter."
                             }
                             li {
-                                "Aces are usually high in poker hands, but may be either low or high for a Straight or Straight Flush."
+                                "Aces are usually high in poker hands, but may be either low or high (but not 
+                                both at once) to make a Straight or Straight Flush."
                             }
                             li {
                                 "A hand is always assigned to the highest-ranking category that it qualifies for."
